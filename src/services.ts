@@ -5,7 +5,7 @@ import trezorModule from '@web3-onboard/trezor'
 import ledgerModule from '@web3-onboard/ledger'
 import walletConnectModule from '@web3-onboard/walletconnect'
 import coinbaseModule from '@web3-onboard/coinbase'
-
+import Onboard from '@web3-onboard/core'
 import blocknativeLogo from './assets/png/Dino Logo.png'
 
 export const plushClaimRedirect = "https://cryptokaiju.io/plushclaim/"
@@ -18,8 +18,19 @@ const dappId = '7a0a4da1-7c92-46af-a12e-e810c1b39d3e'
 
 const injected = injectedModule()
 const coinbase = coinbaseModule()
-const ledger = ledgerModule()
-const walletConnect = walletConnectModule()
+const ledger = ledgerModule({
+  walletConnectVersion: 2,
+  projectId: 'f6de7785ff01b803d72609c01b52021c',
+
+})
+const walletConnect = walletConnectModule({
+  version: 2, // **New Param** Defaults to version: 1 - this behavior will be deprecated after the WalletConnect v1 sunset
+  // handleUri: uri => Promise<unknown> { console.log(uri)},
+  projectId: 'f6de7785ff01b803d72609c01b52021c', // ***New Param* Project ID associated with [WalletConnect account](https://cloud.walletconnect.com)
+  dappUrl: 'https://CryptoKaiju.io',
+
+  requiredChains: [1, 3, 4, 56, 137, 266] // chains required to be supported by WC wallet
+})
 
 const trezorOptions = {
   email: 'test@test.com',
@@ -34,8 +45,7 @@ export const initWeb3Onboard = init({
     ledger,
     coinbase,
     trezor,
-    walletConnect
-  ],
+    walletConnect],
   chains: [
     {
       id: '0x1',
@@ -75,7 +85,7 @@ export const initWeb3Onboard = init({
     }
   ],
   appMetadata: {
-    name: 'CryptoKaiju Plush NFT Minting',
+    name: 'CryptoKaiju Ghost',
     icon: blocknativeLogo,
     logo: blocknativeLogo,
     description: 'CryptoKaiju app for Web3-Onboard',
@@ -92,6 +102,70 @@ export const initWeb3Onboard = init({
     explore: 'https://blocknative.com'
   }
 })
+// export const initWeb3Onboard = init({
+//   wallets: [
+//     injected,
+//     ledger,
+//     coinbase,
+//     trezor,
+//     walletConnect
+//   ],
+//   chains: [
+//     {
+//       id: '0x1',
+//       token: 'ETH',
+//       label: 'Ethereum',
+//       rpcUrl: `https://mainnet.infura.io/v3/${INFURA_ID}`
+//     },
+//     {
+//       id: '0x3',
+//       token: 'tROP',
+//       label: 'Ropsten',
+//       rpcUrl: `https://ropsten.infura.io/v3/${INFURA_ID}`
+//     },
+//     {
+//       id: '0x4',
+//       token: 'rETH',
+//       label: 'Rinkeby',
+//       rpcUrl: `https://rinkeby.infura.io/v3/${INFURA_ID}`
+//     },
+//     {
+//       id: '0x38',
+//       token: 'BNB',
+//       label: 'Binance',
+//       rpcUrl: 'https://bsc-dataseed.binance.org/'
+//     },
+//     {
+//       id: '0x89',
+//       token: 'MATIC',
+//       label: 'Polygon',
+//       rpcUrl: 'https://matic-mainnet.chainstacklabs.com'
+//     },
+//     {
+//       id: '0xfa',
+//       token: 'FTM',
+//       label: 'Fantom',
+//       rpcUrl: 'https://rpc.ftm.tools/'
+//     }
+//   ],
+//   appMetadata: {
+//     name: 'CryptoKaiju Plush NFT Minting',
+//     icon: blocknativeLogo,
+//     logo: blocknativeLogo,
+//     description: 'CryptoKaiju app for Web3-Onboard',
+//     recommendedInjectedWallets: [
+//       { name: 'Coinbase', url: 'https://wallet.coinbase.com/' },
+//       { name: 'MetaMask', url: 'https://metamask.io' }
+//     ],
+//     agreement: {
+//       version: '1.0.0',
+//       termsUrl: 'https://www.blocknative.com/terms-conditions',
+//       privacyUrl: 'https://www.blocknative.com/privacy-policy'
+//     },
+//     gettingStartedGuide: 'https://blocknative.com',
+//     explore: 'https://blocknative.com'
+//   }
+// })
 
 
 export function initNotify() {
